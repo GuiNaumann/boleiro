@@ -22,3 +22,5 @@ database:
 
   # the database name
   name: "boleiro"
+
+  teste: "dsafsf"
