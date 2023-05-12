@@ -2,13 +2,16 @@ package infrastructure
 
 import (
 	players_usecase "boleiro/domain/usecases/players"
+	relation_usecase "boleiro/domain/usecases/relation"
 	sponsor_usecase "boleiro/domain/usecases/sponsor"
 	team_usecase "boleiro/domain/usecases/team"
 	player_repository "boleiro/infrastructure/repositories/players"
+	relation_repository "boleiro/infrastructure/repositories/relation"
 	sponsor_repository "boleiro/infrastructure/repositories/sponsor"
 	team_repository "boleiro/infrastructure/repositories/team"
 	"boleiro/settings"
 	"boleiro/view/players"
+	"boleiro/view/relation"
 	"boleiro/view/sponsor"
 	"boleiro/view/team"
 	"database/sql"
@@ -56,6 +59,10 @@ func setupModules(db *sql.DB, router *mux.Router) {
 	sponsorRepository := sponsor_repository.NewRepository(db)
 	sponsorUseCases := sponsor_usecase.NewUseCases(sponsorRepository)
 	sponsor.NewHttpSponsorModule(sponsorUseCases).Setup(router)
+
+	relationRepository := relation_repository.NewRepository(db)
+	relationUseCases := relation_usecase.NewUseCases(relationRepository)
+	relation.NewHttpRelationModule(relationUseCases).Setup(router)
 }
 
 // retornar json para todas as funções

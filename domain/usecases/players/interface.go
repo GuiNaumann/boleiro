@@ -16,8 +16,8 @@ type UseCases interface {
 	Delete(ctx context.Context, userId int64) error
 
 	// GetAll return all players.
-	GetAll(ctx context.Context) ([]entities.Players, error)
+	GetAll(ctx context.Context, filter entities.ListFilter) ([]entities.Players, error)
 
 	// GetById return a players by id.
-	GetById(ctx context.Context, userId int64) (entities.Players, error)
+	GetById(ctx context.Context, userId int64) (*entities.Players, error)
 }

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS relation_sponsor_players (
+CREATE TABLE IF NOT EXISTS relation (
     id_players INT NOT NULL,
     id_sponsor INT NOT NULL,
     status_code TINYINT NOT NULL DEFAULT 0,
@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS relation_sponsor_players (
     modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
 
-ALTER TABLE relation_sponsor_players ADD FOREIGN KEY (id_players) REFERENCES players(id);
-ALTER TABLE relation_sponsor_players ADD FOREIGN KEY (id_sponsor) REFERENCES sponsor(id);
+
+ALTER TABLE relation ADD FOREIGN KEY (id_players) REFERENCES players(id);
+ALTER TABLE relation ADD FOREIGN KEY (id_sponsor) REFERENCES sponsor(id);

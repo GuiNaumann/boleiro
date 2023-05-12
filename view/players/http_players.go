@@ -26,8 +26,8 @@ func (n newHttpPlayerModule) Setup(router *mux.Router) {
 	router.HandleFunc("/players", n.create).Methods("POST")
 	router.HandleFunc("/players/{id}", n.update).Methods("PUT")
 	router.HandleFunc("/players", n.getAll).Methods("GET")
+	router.HandleFunc("/players/{id}", n.GetById).Methods("GET")
 	router.HandleFunc("/players/{id}", n.delete).Methods("DELETE")
-	log.Println("listening to /players")
 }
 func (n newHttpPlayerModule) create(w http.ResponseWriter, r *http.Request) {
 	b, err := io.ReadAll(r.Body)
@@ -99,12 +99,18 @@ func (n newHttpPlayerModule) update(w http.ResponseWriter, r *http.Request) {
 }
 func (n newHttpPlayerModule) getAll(w http.ResponseWriter, r *http.Request) {
 
-	playersList, err := n.useCases.GetAll(r.Context())
+	orderBy := r.URL.Query().Get("orderBy")
+	orderType := r.URL.Query().Get("orderType")
+
+	filter := entities.ListFilter{OrderBy: orderBy, OrderType: orderType}
+
+	playersList, err := n.useCases.GetAll(r.Context(), filter)
 	if err != nil {
 		log.Println("[getAll] Error GetAll", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	b, err := json.Marshal(playersList)
 	if err != nil {
 		log.Println("[getAll] Error Marshal", err)
@@ -138,6 +144,29 @@ func (n newHttpPlayerModule) delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("[delete] Error Write", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+func (n newHttpPlayerModule) GetById(w http.ResponseWriter, r *http.Request) {
+
+	playersId, err := strconv.ParseInt(mux.Vars(r)["id"], 10, 64)
+	players, err := n.useCases.GetById(r.Context(), playersId)
+	if err != nil {
+		log.Println("[getById] Error", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	b, err := json.Marshal(players)
+	if err != nil {
+		log.Println("[getById] Error Marshal", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = w.Write(b)
+	if err != nil {
+		log.Println("[getById] Error Write", err)
 		return
 	}
 }

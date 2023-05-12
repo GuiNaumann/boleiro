@@ -10,4 +10,5 @@ type Repository interface {
 	Create(ctx context.Context, team entities.Team) error
 	Update(ctx context.Context, team entities.Team, teamId int64) error
 	Delete(ctx context.Context, teamId int64) error
+	GetById(ctx context.Context, userId int64) (*entities.Team, error)
 }

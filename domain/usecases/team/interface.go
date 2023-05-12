@@ -19,5 +19,5 @@ type UseCases interface {
 	GetAll(ctx context.Context) ([]entities.Team, error)
 
 	// GetById return a players by id.
-	GetById(ctx context.Context, userId int64) (entities.Team, error)
+	GetById(ctx context.Context, userId int64) (*entities.Team, error)
 }

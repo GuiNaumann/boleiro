@@ -16,7 +16,7 @@ type newHttpSponsorModule struct {
 	useCases sponsor.UseCases
 }
 
-func NewHttpSponsorModule(useCases sponsor.UseCases) view.HttpModuleww {
+func NewHttpSponsorModule(useCases sponsor.UseCases) view.HttpModule {
 	return &newHttpSponsorModule{
 		useCases: useCases,
 	}
@@ -26,6 +26,7 @@ func (n newHttpSponsorModule) Setup(router *mux.Router) {
 	router.HandleFunc("/sponsor", n.create).Methods("POST")
 	router.HandleFunc("/sponsor/{id}", n.update).Methods("PUT")
 	router.HandleFunc("/sponsor", n.getAll).Methods("GET")
+	router.HandleFunc("/sponsor/{id}", n.GetById).Methods("GET")
 	router.HandleFunc("/sponsor/{id}", n.delete).Methods("DELETE")
 	log.Println("listening to /sponsor")
 }
@@ -138,6 +139,29 @@ func (n newHttpSponsorModule) delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("[delete] Error Write", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+func (n newHttpSponsorModule) GetById(w http.ResponseWriter, r *http.Request) {
+
+	sponsorId, err := strconv.ParseInt(mux.Vars(r)["id"], 10, 64)
+	sponsor, err := n.useCases.GetById(r.Context(), sponsorId)
+	if err != nil {
+		log.Println("[getById] Error", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	b, err := json.Marshal(sponsor)
+	if err != nil {
+		log.Println("[getById] Error Marshal", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = w.Write(b)
+	if err != nil {
+		log.Println("[getById] Error Write", err)
 		return
 	}
 }

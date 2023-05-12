@@ -16,7 +16,7 @@ type newHttpTeamModule struct {
 	useCases team.UseCases
 }
 
-func NewHttpTeamModule(useCases team.UseCases) view.HttpModulew {
+func NewHttpTeamModule(useCases team.UseCases) view.HttpModule {
 	return &newHttpTeamModule{
 		useCases: useCases,
 	}
@@ -26,6 +26,7 @@ func (n newHttpTeamModule) Setup(router *mux.Router) {
 	router.HandleFunc("/team", n.create).Methods("POST")
 	router.HandleFunc("/team/{id}", n.update).Methods("PUT")
 	router.HandleFunc("/team", n.getAll).Methods("GET")
+	router.HandleFunc("/team/{id}", n.GetById).Methods("GET")
 	router.HandleFunc("/team/{id}", n.delete).Methods("DELETE")
 	log.Println("listening to /team")
 }
@@ -138,6 +139,29 @@ func (n newHttpTeamModule) delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("[delete] Error Write", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+func (n newHttpTeamModule) GetById(w http.ResponseWriter, r *http.Request) {
+
+	teamId, err := strconv.ParseInt(mux.Vars(r)["id"], 10, 64)
+	players, err := n.useCases.GetById(r.Context(), teamId)
+	if err != nil {
+		log.Println("[getById] Error", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	b, err := json.Marshal(players)
+	if err != nil {
+		log.Println("[getById] Error Marshal", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = w.Write(b)
+	if err != nil {
+		log.Println("[getById] Error Write", err)
 		return
 	}
 }

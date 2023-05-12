@@ -32,10 +32,11 @@ func (r repository) Create(ctx context.Context, sponsor entities.Sponsor) error 
 func (r repository) Update(ctx context.Context, sponsor entities.Sponsor, sponsorId int64) error {
 	query := `
 	UPDATE sponsor SET name = ? 
-	WHERE id = ?
+	WHERE id = ? AND 
+	      status_code != ?
 	`
 
-	_, err := r.db.ExecContext(ctx, query, sponsor.Name, sponsorId)
+	_, err := r.db.ExecContext(ctx, query, sponsor.Name, sponsorId, entities.StatusDeleted)
 	if err != nil {
 		log.Println("[Upadate] Error ExecContext", err)
 		return err
@@ -51,9 +52,10 @@ func (r repository) GetAll(ctx context.Context) ([]entities.Sponsor, error) {
 	       status_code,
 	       created_at,
 	       modified_at
-	FROM sponsor`
+	FROM sponsor
+	WHERE status_code != ?`
 
-	rows, err := r.db.QueryContext(ctx, query)
+	rows, err := r.db.QueryContext(ctx, query, entities.StatusDeleted)
 	if err != nil {
 		log.Println("[GetAll] Error QueryContext", err)
 		return nil, err
@@ -69,6 +71,7 @@ func (r repository) GetAll(ctx context.Context) ([]entities.Sponsor, error) {
 		}
 		sponsor = append(sponsor, sponsors)
 	}
+	defer rows.Close()
 
 	return sponsor, nil
 }
@@ -87,4 +90,24 @@ func (r repository) Delete(ctx context.Context, sponsorId int64) error {
 	}
 
 	return nil
+}
+func (r repository) GetById(ctx context.Context, idSponsor int64) (*entities.Sponsor, error) {
+	//language=sql
+	query := `
+	SELECT id,
+	       name,
+	       status_code,
+	       created_at,
+	       modified_at
+	FROM sponsor
+	WHERE id = ? AND 
+	      status_code = 0`
+
+	var sponsors entities.Sponsor
+	err := r.db.QueryRowContext(ctx, query, idSponsor).Scan(&sponsors.Id, &sponsors.Name, &sponsors.StatusCode, &sponsors.CreatedAt, &sponsors.ModifiedAt)
+	if err != nil {
+		log.Println("[GetAll] Error QueryContext", err)
+		return nil, err
+	}
+	return &sponsors, err
 }

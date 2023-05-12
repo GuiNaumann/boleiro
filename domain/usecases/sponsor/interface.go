@@ -19,5 +19,5 @@ type UseCases interface {
 	GetAll(ctx context.Context) ([]entities.Sponsor, error)
 
 	// GetById return a sponsor by id.
-	GetById(ctx context.Context, userId int64) (entities.Sponsor, error)
+	GetById(ctx context.Context, userId int64) (*entities.Sponsor, error)
 }
