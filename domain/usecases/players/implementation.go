@@ -57,11 +57,3 @@ func (u useCases) GetById(ctx context.Context, userId int64) (*entities.Players,
 	}
 	return players, nil
 }
-func (u useCases) GetByName(ctx context.Context, userName int64) (*entities.Players, error) {
-	players, err := u.playersRepo.GetByName(ctx, userName)
-	if err != nil {
-		log.Println("[GetByName] Error GetByName ", err)
-
-	}
-	return players, nil
-}

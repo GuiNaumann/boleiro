@@ -20,7 +20,4 @@ type UseCases interface {
 
 	// GetById return a players by id.
 	GetById(ctx context.Context, userId int64) (*entities.Players, error)
-
-	// GetByName return a players by name.
-	GetByName(ctx context.Context, userName int64) (*entities.Players, error)
 }

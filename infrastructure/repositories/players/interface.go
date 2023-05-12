@@ -11,5 +11,4 @@ type Repository interface {
 	Update(ctx context.Context, players entities.Players, playerId int64) error
 	Delete(ctx context.Context, playerId int64) error
 	GetById(ctx context.Context, userId int64) (*entities.Players, error)
-	GetByName(ctx context.Context, userName int64) (*entities.Players, error)
 }
