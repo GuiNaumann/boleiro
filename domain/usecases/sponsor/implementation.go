@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strings"
 )
 
 type useCases struct {
@@ -18,18 +19,29 @@ func NewUseCases(sponsorRepo sponsor.Repository) UseCases {
 	}
 }
 func (u useCases) Create(ctx context.Context, sponsor entities.Sponsor) error {
+	if sponsor.Name == "" {
+		strings.TrimSpace(sponsor.Name)
+		return errors.New("Nome não definido.")
+
+	}
 	if len(sponsor.Name) > 20 {
-		return errors.New("Nome não pode conter mais de 20 caracteres.")
+		return errors.New("sponsor não pode conter mais de 20 caracteres.")
 	}
 
 	return u.sponsorRepo.Create(ctx, sponsor)
+
 }
 func (u useCases) Update(ctx context.Context, sponsor entities.Sponsor, sponsorId int64) error {
+	if sponsor.Name == "" {
+		strings.TrimSpace(sponsor.Name)
+		return errors.New("Nome não definido.")
+
+	}
 	if len(sponsor.Name) > 20 {
-		return errors.New("Nome não pode conter mais de 20 caracteres.")
+		return errors.New("sponsor não pode conter mais de 20 caracteres.")
 	}
 
-	return u.sponsorRepo.Update(ctx, sponsor, sponsorId)
+	return u.sponsorRepo.Create(ctx, sponsor)
 }
 func (u useCases) Delete(ctx context.Context, sponsorId int64) error {
 	return u.sponsorRepo.Delete(ctx, sponsorId)

@@ -70,27 +70,23 @@ func (r repository) GetAll(ctx context.Context, filter entities.ListFilter) ([]e
 		}
 
 		query += ` ORDER BY ` + columnName
-	}
 
-	if filter.OrderType != "" {
-		var teste string
-		switch filter.OrderType {
-		case "id":
-			teste = "id"
-		case "name":
-			teste = "name"
-		case "createdAt":
-			teste = "created_at"
-		case "modifiedAt":
-			teste = "modified_at"
+		if filter.OrderType != "" {
+			var orderType string
+			switch filter.OrderType {
+			case "asc":
+				orderType = " asc "
+			case "desc":
+				orderType = " desc "
+			}
+
+			query += orderType
 		}
-
-		query += ` ORDER BY ` + teste
 	}
 
 	rows, err := r.db.QueryContext(ctx, query, entities.StatusDeleted)
 	if err != nil {
-		log.Println("[GetAll] Error QueryContext", err)
+		log.Println("[GetAll] Error QueryContext ", err)
 		return nil, err
 	}
 
@@ -138,7 +134,27 @@ func (r repository) GetById(ctx context.Context, playerId int64) (*entities.Play
 	var player entities.Players
 	err := r.db.QueryRowContext(ctx, query, playerId).Scan(&player.Id, &player.Name, &player.StatusCode, &player.CreatedAt, &player.ModifiedAt)
 	if err != nil {
-		log.Println("[GetAll] Error QueryContext", err)
+		log.Println("[GetAll] Error QueryRowContext teste11111", err)
+		return nil, err
+	}
+	return &player, err
+}
+func (r repository) GetByName(ctx context.Context, playerName int64) (*entities.Players, error) {
+	//language=sql
+	query := `
+	SELECT id,
+	       name,
+	       status_code,
+	       created_at,
+	       modified_at
+	FROM players
+	WHERE name = ? AND 
+	      status_code = 0`
+
+	var player entities.Players
+	err := r.db.QueryRowContext(ctx, query, playerName).Scan(&player.Id, &player.Name, &player.StatusCode, &player.CreatedAt, &player.ModifiedAt)
+	if err != nil {
+		log.Println("[GetByName] Error QueryRowContext ", err)
 		return nil, err
 	}
 	return &player, err

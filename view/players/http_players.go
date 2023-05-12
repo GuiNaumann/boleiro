@@ -27,6 +27,7 @@ func (n newHttpPlayerModule) Setup(router *mux.Router) {
 	router.HandleFunc("/players/{id}", n.update).Methods("PUT")
 	router.HandleFunc("/players", n.getAll).Methods("GET")
 	router.HandleFunc("/players/{id}", n.GetById).Methods("GET")
+	router.HandleFunc("/players/name/{name}", n.getByName).Methods("GET")
 	router.HandleFunc("/players/{id}", n.delete).Methods("DELETE")
 }
 func (n newHttpPlayerModule) create(w http.ResponseWriter, r *http.Request) {
@@ -167,6 +168,29 @@ func (n newHttpPlayerModule) GetById(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(b)
 	if err != nil {
 		log.Println("[getById] Error Write", err)
+		return
+	}
+}
+func (n newHttpPlayerModule) getByName(w http.ResponseWriter, r *http.Request) {
+
+	playersName, err := strconv.ParseInt(mux.Vars(r)["name"], 10, 64)
+	players, err := n.useCases.GetByName(r.Context(), playersName)
+	if err != nil {
+		log.Println("[getByName] Error", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	b, err := json.Marshal(players)
+	if err != nil {
+		log.Println("[getByName] Error Marshal", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = w.Write(b)
+	if err != nil {
+		log.Println("[getByName] Error Write", err)
 		return
 	}
 }
