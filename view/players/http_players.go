@@ -50,7 +50,7 @@ func (n newHttpPlayerModule) create(w http.ResponseWriter, r *http.Request) {
 	err = n.useCases.Create(r.Context(), player)
 	if err != nil {
 		log.Println("[create] Error Create", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("ocorreu um erro inesperado."))
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -87,7 +87,7 @@ func (n newHttpPlayerModule) update(w http.ResponseWriter, r *http.Request) {
 	err = n.useCases.Update(r.Context(), player, playersId)
 	if err != nil {
 		log.Println("[Update] Error Update", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("Ocorreu um erro ao atualizar."))
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -109,7 +109,7 @@ func (n newHttpPlayerModule) getAll(w http.ResponseWriter, r *http.Request) {
 	playersList, err := n.useCases.GetAll(r.Context(), filter)
 	if err != nil {
 		log.Println("[getAll] Error GetAll", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("Ocorreu um erro inesperado."))
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -138,7 +138,7 @@ func (n newHttpPlayerModule) delete(w http.ResponseWriter, r *http.Request) {
 	err = n.useCases.Delete(r.Context(), playersId)
 	if err != nil {
 		log.Println("[delete] Error Delete", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("Ocorreu um erro ao deletar."))
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -155,7 +155,7 @@ func (n newHttpPlayerModule) GetById(w http.ResponseWriter, r *http.Request) {
 	players, err := n.useCases.GetById(r.Context(), playersId)
 	if err != nil {
 		log.Println("[getById] Error", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("id do jogador é invalido."))
+		http_error.HandleError(w, err)
 		return
 	}
 

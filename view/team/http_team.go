@@ -50,7 +50,7 @@ func (n newHttpTeamModule) create(w http.ResponseWriter, r *http.Request) {
 	err = n.useCases.Create(r.Context(), team)
 	if err != nil {
 		log.Println("[create] Error Create", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("Ocorreu um erro."))
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -87,7 +87,7 @@ func (n newHttpTeamModule) update(w http.ResponseWriter, r *http.Request) {
 	err = n.useCases.Update(r.Context(), team, teamId)
 	if err != nil {
 		log.Println("[Update] Error Update", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("Ocorreu um erro ao atualizar."))
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -103,7 +103,7 @@ func (n newHttpTeamModule) getAll(w http.ResponseWriter, r *http.Request) {
 	teamList, err := n.useCases.GetAll(r.Context())
 	if err != nil {
 		log.Println("[getAll] Error GetAll", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("Ocorreu um erro inesperado."))
+		http_error.HandleError(w, err)
 		return
 	}
 	b, err := json.Marshal(teamList)
@@ -131,7 +131,7 @@ func (n newHttpTeamModule) delete(w http.ResponseWriter, r *http.Request) {
 	err = n.useCases.Delete(r.Context(), teamId)
 	if err != nil {
 		log.Println("[delete] Error Delete", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("Ocorreu um erro ao deletar."))
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -148,7 +148,7 @@ func (n newHttpTeamModule) GetById(w http.ResponseWriter, r *http.Request) {
 	players, err := n.useCases.GetById(r.Context(), teamId)
 	if err != nil {
 		log.Println("[getById] Error", err)
-		http_error.HandleError(w, http_error.NewBadRequestError("id do time é invalido."))
+		http_error.HandleError(w, err)
 		return
 	}
 
