@@ -13,10 +13,6 @@ func HandleError(w http.ResponseWriter, err error) {
 		statusCode = http.StatusBadRequest
 	case NotFoundError:
 		statusCode = http.StatusNotFound
-	//case UnauthorizedError:
-	//	statusCode = http.StatusUnauthorized
-	//case ForbiddenError:
-	//	statusCode = http.StatusForbidden
 	case InternalServerError:
 		statusCode = http.StatusInternalServerError
 	default:

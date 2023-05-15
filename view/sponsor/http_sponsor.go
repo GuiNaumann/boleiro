@@ -167,6 +167,7 @@ func (n newHttpSponsorModule) GetById(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(b)
 	if err != nil {
 		log.Println("[getById] Error Write", err)
+		http_error.HandleError(w, err)
 		return
 	}
 }
