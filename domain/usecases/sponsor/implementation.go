@@ -3,8 +3,9 @@ package sponsor
 import (
 	"boleiro/domain/entities"
 	"boleiro/infrastructure/repositories/sponsor"
+	"boleiro/view/http_error"
 	"context"
-	"errors"
+	"database/sql"
 	"log"
 	"strings"
 )
@@ -22,10 +23,10 @@ func (u useCases) Create(ctx context.Context, sponsor entities.Sponsor) error {
 	sponsor.Name = strings.TrimSpace(sponsor.Name)
 
 	if sponsor.Name == "" {
-		return errors.New("Nome não definido.")
+		return http_error.NewBadRequestError("Nome não definido.")
 	}
-	if len(sponsor.Name) > 20 {
-		return errors.New("Nome não pode conter mais de 20 caracteres.")
+	if len(sponsor.Name) > 100 {
+		return http_error.NewBadRequestError("Nome não pode conter mais de 100 caracteres.")
 	}
 
 	return u.sponsorRepo.Create(ctx, sponsor)
@@ -35,10 +36,19 @@ func (u useCases) Update(ctx context.Context, sponsor entities.Sponsor, sponsorI
 	sponsor.Name = strings.TrimSpace(sponsor.Name)
 
 	if sponsor.Name == "" {
-		return errors.New("Nome não definido.")
+		return http_error.NewBadRequestError("Nome não definido.")
 	}
-	if len(sponsor.Name) > 20 {
-		return errors.New("Nome não pode conter mais de 20 caracteres.")
+	if len(sponsor.Name) > 100 {
+		return http_error.NewBadRequestError("Nome não pode conter mais de 100 caracteres.")
+	}
+
+	_, err := u.sponsorRepo.GetById(ctx, sponsorId)
+	if err != nil && err != sql.ErrNoRows {
+		log.Println("[] Error ")
+		return http_error.NewInternalServerError("Ocorreu um erro inesperado.")
+	}
+	if err == sql.ErrNoRows {
+		return http_error.NewBadRequestError("Sponsor não encontrado.")
 	}
 
 	return u.sponsorRepo.Update(ctx, sponsor, sponsorId)

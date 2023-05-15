@@ -3,8 +3,9 @@ package team
 import (
 	"boleiro/domain/entities"
 	"boleiro/infrastructure/repositories/team"
+	"boleiro/view/http_error"
 	"context"
-	"errors"
+	"database/sql"
 	"log"
 	"strings"
 )
@@ -23,10 +24,10 @@ func (u useCases) Create(ctx context.Context, team entities.Team) error {
 	team.Name = strings.TrimSpace(team.Name)
 
 	if team.Name == "" {
-		return errors.New("Nome não definido.")
+		return http_error.NewBadRequestError("Nome não definido.")
 	}
-	if len(team.Name) > 20 {
-		return errors.New("Nome não pode conter mais de 20 caracteres.")
+	if len(team.Name) > 100 {
+		return http_error.NewBadRequestError("Nome não pode conter mais de 100 caracteres.")
 	}
 
 	return u.teamRepo.Create(ctx, team)
@@ -35,10 +36,19 @@ func (u useCases) Update(ctx context.Context, team entities.Team, teamId int64) 
 	team.Name = strings.TrimSpace(team.Name)
 
 	if team.Name == "" {
-		return errors.New("Nome não definido.")
+		return http_error.NewBadRequestError("Nome não definido.")
 	}
-	if len(team.Name) > 20 {
-		return errors.New("Nome não pode conter mais de 20 caracteres.")
+	if len(team.Name) > 100 {
+		return http_error.NewBadRequestError("Nome não pode conter mais de 100 caracteres.")
+	}
+
+	_, err := u.teamRepo.GetById(ctx, teamId)
+	if err != nil && err != sql.ErrNoRows {
+		log.Println("[] Error ")
+		return http_error.NewInternalServerError("Ocorreu um erro inesperado.")
+	}
+	if err == sql.ErrNoRows {
+		return http_error.NewBadRequestError("Time não encontrado.")
 	}
 
 	return u.teamRepo.Update(ctx, team, teamId)

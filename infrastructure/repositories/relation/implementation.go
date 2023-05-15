@@ -53,8 +53,9 @@ func (r repository) GetById(ctx context.Context, idPlayer int64) ([]entities.Spo
 	       s.created_at,
 	       s.modified_at
 	FROM sponsor s
-	INNER JOIN relation ON s.id = relation.id_sponsor AND relation.id_players = ?
-	WHERE s.status_code != 2`
+	INNER JOIN relation ON s.id = relation.id_sponsor AND relation.id_players = ? AND relation.status_code = 0
+	WHERE s.status_code != 2
+	`
 
 	rows, err := r.db.QueryContext(ctx, query, idPlayer)
 	if err != nil {
@@ -90,7 +91,7 @@ func (r repository) GetByIdS(ctx context.Context, idSponsor int64) ([]entities.P
 	       p.created_at,
 	       p.modified_at
 	FROM players p
-	INNER JOIN relation ON p.id = relation.id_players AND relation.id_sponsor = ?
+	INNER JOIN relation ON p.id = relation.id_players AND relation.id_sponsor = ? AND relation.status_code = 0
 	WHERE p.status_code != 2`
 
 	rows, err := r.db.QueryContext(ctx, query, idSponsor)

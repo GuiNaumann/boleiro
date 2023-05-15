@@ -3,6 +3,7 @@ package relation
 import (
 	"boleiro/domain/usecases/relation"
 	"boleiro/view"
+	"boleiro/view/http_error"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
@@ -32,7 +33,7 @@ func (n newHttpRelationModule) create(w http.ResponseWriter, r *http.Request) {
 	idPlayer, err := strconv.ParseInt(idPlayerString, 10, 64)
 	if err != nil {
 		log.Println("[create] Error ParseInt", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -40,20 +41,20 @@ func (n newHttpRelationModule) create(w http.ResponseWriter, r *http.Request) {
 	idSponsor, err := strconv.ParseInt(idSponsorString, 10, 64)
 	if err != nil {
 		log.Println("[create] Error ParseInt", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http_error.HandleError(w, err)
 		return
 	}
 
 	err = n.useCases.Create(r.Context(), idPlayer, idSponsor)
 	if err != nil {
 		log.Println("[Create] Error", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http_error.HandleError(w, err)
 		return
 	}
 
 	_, err = w.Write([]byte("success"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http_error.HandleError(w, err)
 		log.Println("[setCurrentPresentation] Error Write", err)
 		return
 	}
@@ -66,7 +67,7 @@ func (n newHttpRelationModule) delete(w http.ResponseWriter, r *http.Request) {
 	idPlayer, err := strconv.ParseInt(idPlayerString, 10, 64)
 	if err != nil {
 		log.Println("[delete] Error ParseInt", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -74,21 +75,21 @@ func (n newHttpRelationModule) delete(w http.ResponseWriter, r *http.Request) {
 	idSponsor, err := strconv.ParseInt(idSponsorString, 10, 64)
 	if err != nil {
 		log.Println("[delete] Error ParseInt", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http_error.HandleError(w, err)
 		return
 	}
 
 	err = n.useCases.Delete(r.Context(), idPlayer, idSponsor)
 	if err != nil {
 		log.Println("[delete] Error Delete", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http_error.HandleError(w, err)
 		return
 	}
 
 	_, err = w.Write([]byte("success"))
 	if err != nil {
 		log.Println("[delete] Error Write", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http_error.HandleError(w, err)
 		return
 	}
 }
@@ -98,14 +99,14 @@ func (n newHttpRelationModule) getById(w http.ResponseWriter, r *http.Request) {
 	sponsors, err := n.useCases.GetById(r.Context(), idPlayer)
 	if err != nil {
 		log.Println("[getById] Error", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http_error.HandleError(w, err)
 		return
 	}
 
 	b, err := json.Marshal(sponsors)
 	if err != nil {
 		log.Println("[getById] Error Marshal", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http_error.HandleError(w, err)
 		return
 	}
 
@@ -121,14 +122,14 @@ func (n newHttpRelationModule) getByIdS(w http.ResponseWriter, r *http.Request) 
 	players, err := n.useCases.GetByIdS(r.Context(), idSponsor)
 	if err != nil {
 		log.Println("[getByIdS] Error", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http_error.HandleError(w, err)
 		return
 	}
 
 	b, err := json.Marshal(players)
 	if err != nil {
 		log.Println("[getByIdS] Error Marshal", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http_error.HandleError(w, err)
 		return
 	}
 
