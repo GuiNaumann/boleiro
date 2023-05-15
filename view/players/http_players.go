@@ -57,7 +57,7 @@ func (n newHttpPlayerModule) create(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write([]byte("success"))
 	if err != nil {
 		log.Println("[create] Error Write", err)
-		http_error.HandleError(w, http_error.NewInternalServerError("Ocorreu um erro inesperado"))
+		http_error.HandleError(w, http_error.NewInternalServerError(http_error.UnexpectedError))
 		return
 	}
 
@@ -94,7 +94,7 @@ func (n newHttpPlayerModule) update(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write([]byte("success"))
 	if err != nil {
 		log.Println("[Update] Error Write", err)
-		http_error.HandleError(w, http_error.NewInternalServerError("Ocorreu um erro inesperado"))
+		http_error.HandleError(w, http_error.NewInternalServerError(http_error.UnexpectedError))
 		return
 	}
 }
@@ -122,7 +122,7 @@ func (n newHttpPlayerModule) getAll(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(b)
 	if err != nil {
 		log.Println("[getAll] Error Write", err)
-		http_error.HandleError(w, http_error.NewInternalServerError("Ocorreu um erro inesperado"))
+		http_error.HandleError(w, http_error.NewInternalServerError(http_error.UnexpectedError))
 		return
 	}
 }
@@ -145,7 +145,7 @@ func (n newHttpPlayerModule) delete(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write([]byte("success"))
 	if err != nil {
 		log.Println("[delete] Error Write", err)
-		http_error.HandleError(w, http_error.NewInternalServerError("Ocorreu um erro inesperado"))
+		http_error.HandleError(w, http_error.NewInternalServerError(http_error.UnexpectedError))
 		return
 	}
 }
@@ -169,7 +169,7 @@ func (n newHttpPlayerModule) GetById(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(b)
 	if err != nil {
 		log.Println("[getById] Error Write", err)
-		http_error.HandleError(w, http_error.NewInternalServerError("Ocorreu um erro inesperado"))
+		http_error.HandleError(w, http_error.NewInternalServerError(http_error.UnexpectedError))
 		return
 	}
 }

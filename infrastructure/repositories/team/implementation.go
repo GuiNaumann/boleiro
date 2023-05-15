@@ -60,6 +60,7 @@ func (r repository) GetAll(ctx context.Context) ([]entities.Team, error) {
 		log.Println("[GetAll] Error QueryContext", err)
 		return nil, err
 	}
+	defer rows.Close()
 
 	var team []entities.Team
 	for rows.Next() {
@@ -72,7 +73,6 @@ func (r repository) GetAll(ctx context.Context) ([]entities.Team, error) {
 		}
 		team = append(team, teams)
 	}
-	defer rows.Close()
 	return team, nil
 }
 func (r repository) Delete(ctx context.Context, teamId int64) error {

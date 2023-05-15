@@ -44,8 +44,8 @@ func (u useCases) Update(ctx context.Context, team entities.Team, teamId int64) 
 
 	_, err := u.teamRepo.GetById(ctx, teamId)
 	if err != nil && err != sql.ErrNoRows {
-		log.Println("[] Error ")
-		return http_error.NewInternalServerError("Ocorreu um erro inesperado.")
+		log.Println("[Update] Error GetById", err)
+		return http_error.NewInternalServerError(http_error.UnexpectedError)
 	}
 	if err == sql.ErrNoRows {
 		return http_error.NewBadRequestError("Time não encontrado.")

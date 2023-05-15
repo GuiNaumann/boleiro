@@ -45,7 +45,7 @@ func (u useCases) Update(ctx context.Context, sponsor entities.Sponsor, sponsorI
 	_, err := u.sponsorRepo.GetById(ctx, sponsorId)
 	if err != nil && err != sql.ErrNoRows {
 		log.Println("[] Error ")
-		return http_error.NewInternalServerError("Ocorreu um erro inesperado.")
+		return http_error.NewInternalServerError(http_error.UnexpectedError)
 	}
 	if err == sql.ErrNoRows {
 		return http_error.NewBadRequestError("patrocinador não encontrado.")
