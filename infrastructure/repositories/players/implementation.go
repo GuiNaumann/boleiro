@@ -134,10 +134,10 @@ func (r repository) GetById(ctx context.Context, playerId int64) (*entities.Play
 	       modified_at
 	FROM players
 	WHERE id = ? AND 
-	      status_code = 0 `
+	      status_code != ? `
 
 	var player entities.Players
-	err := r.db.QueryRowContext(ctx, query, playerId).Scan(&player.Id, &player.Name, &player.StatusCode, &player.CreatedAt, &player.ModifiedAt)
+	err := r.db.QueryRowContext(ctx, query, playerId, entities.StatusDeleted).Scan(&player.Id, &player.Name, &player.StatusCode, &player.CreatedAt, &player.ModifiedAt)
 	if err != nil {
 		log.Println("[GetAll] Error QueryRowContext ", err)
 		return nil, err

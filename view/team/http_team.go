@@ -109,7 +109,7 @@ func (n newHttpTeamModule) getAll(w http.ResponseWriter, r *http.Request) {
 	b, err := json.Marshal(teamList)
 	if err != nil {
 		log.Println("[getAll] Error Marshal", err)
-		http_error.HandleError(w, http_error.NewInternalServerError("time é invalido"))
+		http_error.HandleError(w, http_error.NewInternalServerError("Ocorreu um erro inesperado"))
 		return
 	}
 	_, err = w.Write(b)

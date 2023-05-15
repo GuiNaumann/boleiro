@@ -52,9 +52,10 @@ func (r repository) GetAll(ctx context.Context) ([]entities.Team, error) {
 	       status_code,
 	       created_at,
 	       modified_at
-	FROM team`
+	FROM team 
+	WHERE status_code != ?`
 
-	rows, err := r.db.QueryContext(ctx, query)
+	rows, err := r.db.QueryContext(ctx, query, entities.StatusDeleted)
 	if err != nil {
 		log.Println("[GetAll] Error QueryContext", err)
 		return nil, err
@@ -100,7 +101,7 @@ func (r repository) GetById(ctx context.Context, idTeam int64) (*entities.Team, 
 	       modified_at
 	FROM team
 	WHERE id = ? AND 
-	      status_code = 0`
+	      status_code = 0  `
 
 	var teams entities.Team
 	err := r.db.QueryRowContext(ctx, query, idTeam).Scan(&teams.Id, &teams.Name, &teams.StatusCode, &teams.CreatedAt, &teams.ModifiedAt)
