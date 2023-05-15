@@ -47,7 +47,7 @@ func (r repository) Update(ctx context.Context, players entities.Players, player
 func (r repository) GetAll(ctx context.Context, filter entities.ListFilter) ([]entities.Players, error) {
 	//language=sql
 	query := `
-	SELECT id,
+	 SELECT id,
 	       name,
 	       status_code,
 	       created_at,

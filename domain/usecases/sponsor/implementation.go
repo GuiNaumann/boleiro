@@ -19,35 +19,36 @@ func NewUseCases(sponsorRepo sponsor.Repository) UseCases {
 	}
 }
 func (u useCases) Create(ctx context.Context, sponsor entities.Sponsor) error {
-	if sponsor.Name == "" {
-		strings.TrimSpace(sponsor.Name)
-		return errors.New("Nome não definido.")
+	sponsor.Name = strings.TrimSpace(sponsor.Name)
 
+	if sponsor.Name == "" {
+		return errors.New("Nome não definido.")
 	}
 	if len(sponsor.Name) > 20 {
-		return errors.New("sponsor não pode conter mais de 20 caracteres.")
+		return errors.New("Nome não pode conter mais de 20 caracteres.")
 	}
 
 	return u.sponsorRepo.Create(ctx, sponsor)
 
 }
 func (u useCases) Update(ctx context.Context, sponsor entities.Sponsor, sponsorId int64) error {
-	if sponsor.Name == "" {
-		strings.TrimSpace(sponsor.Name)
-		return errors.New("Nome não definido.")
+	sponsor.Name = strings.TrimSpace(sponsor.Name)
 
+	if sponsor.Name == "" {
+		return errors.New("Nome não definido.")
 	}
 	if len(sponsor.Name) > 20 {
-		return errors.New("sponsor não pode conter mais de 20 caracteres.")
+		return errors.New("Nome não pode conter mais de 20 caracteres.")
 	}
 
-	return u.sponsorRepo.Create(ctx, sponsor)
+	return u.sponsorRepo.Update(ctx, sponsor, sponsorId)
+
 }
 func (u useCases) Delete(ctx context.Context, sponsorId int64) error {
 	return u.sponsorRepo.Delete(ctx, sponsorId)
 }
-func (u useCases) GetAll(ctx context.Context) ([]entities.Sponsor, error) {
-	return u.sponsorRepo.GetAll(ctx)
+func (u useCases) GetAll(ctx context.Context, filter entities.ListFilter) ([]entities.Sponsor, error) {
+	return u.sponsorRepo.GetAll(ctx, filter)
 }
 func (u useCases) GetById(ctx context.Context, userId int64) (*entities.Sponsor, error) {
 

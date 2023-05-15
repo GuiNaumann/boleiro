@@ -20,10 +20,10 @@ func NewUseCases(playersRepo players.Repository) UseCases {
 }
 func (u useCases) Create(ctx context.Context, player entities.Players) error {
 
-	if player.Name == "" {
-		strings.TrimSpace(player.Name)
-		return errors.New("Nome não definido.")
+	player.Name = strings.TrimSpace(player.Name)
 
+	if player.Name == "" {
+		return errors.New("Nome não definido.")
 	}
 	if len(player.Name) > 20 {
 		return errors.New("Nome não pode conter mais de 20 caracteres.")
@@ -32,16 +32,16 @@ func (u useCases) Create(ctx context.Context, player entities.Players) error {
 	return u.playersRepo.Create(ctx, player)
 }
 func (u useCases) Update(ctx context.Context, player entities.Players, playerId int64) error {
-	if player.Name == "" {
-		strings.TrimSpace(player.Name)
-		return errors.New("Nome não definido.")
+	player.Name = strings.TrimSpace(player.Name)
 
+	if player.Name == "" {
+		return errors.New("Nome não definido.")
 	}
 	if len(player.Name) > 20 {
 		return errors.New("Nome não pode conter mais de 20 caracteres.")
 	}
 
-	return u.playersRepo.Create(ctx, player)
+	return u.playersRepo.Update(ctx, player, playerId)
 }
 func (u useCases) Delete(ctx context.Context, playerId int64) error {
 	return u.playersRepo.Delete(ctx, playerId)

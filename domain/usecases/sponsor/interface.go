@@ -16,7 +16,7 @@ type UseCases interface {
 	Delete(ctx context.Context, userId int64) error
 
 	// GetAll return all sponsor.
-	GetAll(ctx context.Context) ([]entities.Sponsor, error)
+	GetAll(ctx context.Context, filter entities.ListFilter) ([]entities.Sponsor, error)
 
 	// GetById return a sponsor by id.
 	GetById(ctx context.Context, userId int64) (*entities.Sponsor, error)

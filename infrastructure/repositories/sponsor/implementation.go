@@ -44,7 +44,7 @@ func (r repository) Update(ctx context.Context, sponsor entities.Sponsor, sponso
 
 	return nil
 }
-func (r repository) GetAll(ctx context.Context) ([]entities.Sponsor, error) {
+func (r repository) GetAll(ctx context.Context, filter entities.ListFilter) ([]entities.Sponsor, error) {
 	//language=sql
 	query := `
 	SELECT id,
@@ -54,6 +54,10 @@ func (r repository) GetAll(ctx context.Context) ([]entities.Sponsor, error) {
 	       modified_at
 	FROM sponsor
 	WHERE status_code != ?`
+
+	if filter.Sponsor != "" {
+		query += ` AND name LIKE '` + filter.Sponsor + `%'`
+	}
 
 	rows, err := r.db.QueryContext(ctx, query, entities.StatusDeleted)
 	if err != nil {

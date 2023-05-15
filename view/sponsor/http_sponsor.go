@@ -100,12 +100,17 @@ func (n newHttpSponsorModule) update(w http.ResponseWriter, r *http.Request) {
 }
 func (n newHttpSponsorModule) getAll(w http.ResponseWriter, r *http.Request) {
 
-	sponsorList, err := n.useCases.GetAll(r.Context())
+	sponsor := r.URL.Query().Get("sponsor")
+
+	filter := entities.ListFilter{Sponsor: sponsor}
+
+	sponsorList, err := n.useCases.GetAll(r.Context(), filter)
 	if err != nil {
 		log.Println("[getAll] Error GetAll", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	b, err := json.Marshal(sponsorList)
 	if err != nil {
 		log.Println("[getAll] Error Marshal", err)
